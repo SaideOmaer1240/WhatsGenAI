@@ -11,7 +11,7 @@ async function initSessions(sessions, io) {
         
         // Iterando sobre as sessões e criando as sessões no sistema
         sessionsFromDB.forEach(session => {
-            createSession(session.sessionId, session.userId, sessions, io);
+            createSession(session.sessionId, session.userId, sessions, io, ready=true);
         });
     } catch (error) {
         console.error("Erro ao buscar sessões:", error);

@@ -9,6 +9,12 @@ const authRoutes = require('./src/routes/authRoutes');
 const sellerRoutes = require('./src/routes/sellers');
 const sessionRoutes = require('./src/routes/sessionsRoutes');
 
+// Importando utilitarios
+const initSessions = require('./src/utils/initSession');
+
+
+
+const sessions = {}; 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -31,7 +37,7 @@ app.use(express.json());
 // Registrar rotas
 app.use('/api/auth', authRoutes);
 app.use('/api/sellers', sellerRoutes);
-app.use('/api/sessions', sessionRoutes(io));
+app.use('/api/sessions', sessionRoutes(io, sessions));
 
 // Middleware global para erros
 app.use((err, _req, res, _next) => {
@@ -52,3 +58,5 @@ io.on('connection', (socket) => {
         console.log(`Cliente desconectado: ${socket.id}`);
     });
 });
+
+initSessions(sessions, io);

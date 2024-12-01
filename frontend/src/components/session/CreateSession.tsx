@@ -16,10 +16,12 @@ export default function CreateSession() {
     }
 
     const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    const id = Number(userId);
     try {
       const response = await api.post(
         "/sessions/create",
-        { sessionId: sessionName, userId: 1 },
+        { sessionId: sessionName, userId: id},
         { headers: { Authorization: `Bearer ${token}` } }
       );
        

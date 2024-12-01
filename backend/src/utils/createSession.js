@@ -6,16 +6,17 @@ const { Server } = require('socket.io');
 const tools = new Tools();
 const prisma = new PrismaClient();
 
-async function createSession(sessionId, userId, sessions, io) {
+async function createSession(sessionId, userId, sessions, io, ready) {
     const client = new Client({
         authStrategy: new LocalAuth({ clientId: sessionId })
     });
-
+    
     client.on('qr', async (qr) => {
-        console.log(`QR code gerado para sessão ${sessionId}`);
-        sessions[sessionId].qr = qr;
-        io.emit(`qr-${sessionId}`, qr);
-    });
+            console.log(`QR code gerado para sessão ${sessionId}`);
+            sessions[sessionId].qr = qr;
+            io.emit(`qr-${sessionId}`, qr);
+        });
+     
 
     client.on('ready', async () => {
         console.log(`Cliente ${sessionId} está pronto!`);
@@ -33,17 +34,20 @@ async function createSession(sessionId, userId, sessions, io) {
         if (message.fromMe) return;
 
         const userId = message.from;
+        const status = userId.includes('status');
         let resposta;
 
-        if (message.hasMedia) {
+        if (message.hasMedia && !status) {
             const mediaData = await tools.baixarMidia(message);
             resposta = mediaData ? await tools.processarMedia(userId, mediaData, sessionId) : "Não consegui baixar a mídia.";
-        } else {
+        } else if(!status) {
             resposta = await tools.processarTexto(userId, message.body, sessionId);
         }
 
         try {
+            if(resposta){
             await message.reply(resposta.replace(/\*\*/g, "*"));
+            }
         } catch (error) {
             console.error("Erro ao enviar a resposta:", error);
         }

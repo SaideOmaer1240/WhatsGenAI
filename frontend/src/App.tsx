@@ -5,6 +5,7 @@ import RegisterPage from './pages/RegisterPage';
 import LandingPage from './pages/LandingPage'; 
 import Create from './pages/Create';
 import SessionSelector from './components/session/SessionSelector';
+import './App.css';
 const App: React.FC = () => {
     return (
         <Router>

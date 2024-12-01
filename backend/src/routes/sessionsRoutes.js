@@ -12,9 +12,8 @@ const sessionSchema = Joi.object({
     userId: Joi.number().integer().required(),
 });
 
-module.exports = (io) => {
-    const sessions = {}; 
-
+module.exports = (io, sessions) => {
+    
     // Criar uma nova sessão para um usuário
     router.post('/create', async (req, res) => {
         const { error } = sessionSchema.validate(req.body);
@@ -37,7 +36,7 @@ module.exports = (io) => {
             }
 
             // Criar sessão usando a função utilitária
-            createSession(sessionId, userId, sessions, io);
+            createSession(sessionId, userId, sessions, io, ready=false);
             res.status(200).json({ message: 'Sessão criada. Aguarde o QR code.' });
         } catch (err) {
             res.status(500).json({ error: 'Erro ao criar sessão.', details: err.message });
