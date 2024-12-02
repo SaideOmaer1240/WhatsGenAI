@@ -5,6 +5,8 @@ import RegisterPage from './pages/RegisterPage';
 import LandingPage from './pages/LandingPage'; 
 import Create from './pages/Create';
 import SessionSelector from './components/session/SessionSelector';
+import Editor from './test/ Editor';
+
 import './App.css';
 const App: React.FC = () => {
     return (
@@ -15,6 +17,7 @@ const App: React.FC = () => {
                 <Route path="/register" element={<RegisterPage/>} />
                 <Route path="/create/seller" element={<SessionSelector />} />
                 <Route path="/create/session" element={<Create />} />
+                <Route path="/test" element={<Editor/>} />
                  
             </Routes>
         </Router>

@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Estilos globais para a barra de rolagem */
+body {
+    scrollbar-width: thin !important; /* Para navegadores Firefox */
+    scrollbar-color: #4a90e2 #f5f5f5 !important; /* Cor do polegar e fundo */
+  }
+  
+  /* Para navegadores baseados em Webkit (Chrome, Edge, Safari) */
+  #root::-webkit-scrollbar {
+    width: 12px !important;
+    height: 12px !important;
+  }
+  
+  #root::-webkit-scrollbar-thumb {
+    background: #4a90e2 !important; /* Cor do polegar */
+    border-radius: 10px !important;
+    border: 3px solid #f5f5f5 !important; /* Espaço ao redor do polegar */
+  }
+  
+  #root::-webkit-scrollbar-track {
+    background: #f5f5f5 !important; /* Cor do fundo */
+    border-radius: 10px !important;
+  }
+
+.ql-container.ql-snow {
+    border: none !important;
+  }

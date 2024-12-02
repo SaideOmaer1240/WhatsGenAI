@@ -3,31 +3,49 @@ const express = require('express');
 const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const Seller = require('../seller/Seller'); 
+const multer = require('multer'); 
+const path = require('path');
 const prisma = new PrismaClient();
 const sellerController = new Seller();
 
- 
+  
 
-// Criar vendedor
-router.post('/create', async (req, res, next) => {
-    const { sessionId, sellerName, product, description, benefits, image } = req.body;
-    try {
-        const result = await sellerController.create({
-            sessionId,
-            sellerName,
-            product,
-            description,
-            benefits,
-            image,
-        });
-        if (!result.success) {
-            return res.status(400).json({ error: result.message });
-        }
-        res.status(201).json(result);
-    } catch (error) {
-        next(error);
-    }
+// Configuração do multer para armazenar arquivos no disco
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, '../../uploads')); // Define o diretório de destino
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`); // Define o nome do arquivo
+  },
 });
+
+const upload = multer({ storage });
+
+// Rota para criação de vendedor com upload de imagem
+router.post('/create', upload.single('image'), async (req, res, next) => {
+  const { sessionId, sellerName, product, description, benefits } = req.body;
+  const image = req.file ? req.file.path : null;
+
+  try {
+    const result = await sellerController.create({
+      sessionId,
+      sellerName,
+      product,
+      description,
+      benefits,
+      image,
+    });
+
+    if (!result.success) {
+      return res.status(400).json({ error: result.message });
+    }
+
+    res.status(201).json(result);
+  } catch (error) {
+    next(error);
+  }
+});  
 
 // Listar todos os vendedores de uma sessão
 router.get('/:sessionId', async (req, res, next) => {

@@ -15,8 +15,9 @@ export interface SellerFormInputs {
     product: string;
     description: string;
     benefits: string;
-    image?: string;
-}
+    image?: File | string; 
+  }
+  
 
 export  interface Session {
     id: number;

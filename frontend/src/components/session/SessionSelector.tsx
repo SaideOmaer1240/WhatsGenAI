@@ -51,9 +51,8 @@ const SessionSelector: React.FC = () => {
 
     return (
         <div className="p-6 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
-            <h2 className="text-2xl font-semibold text-center text-gray-700 mb-4">Selecione uma Sessão</h2>
-    
-            {sessions.length > 0 ? (
+             
+     {sessions.length > 0 ? (
                 <SellerForm sessions={sessions} onSuccess={handleSessionSelect} />
             ) : (
                 <p className="text-center text-gray-500">Nenhuma sessão encontrada.</p>
