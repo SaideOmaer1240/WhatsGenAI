@@ -83,25 +83,8 @@ class VendorService {
       console.error('Erro ao verificar vendedor:', error);
       throw error;
     }
-  }
- 
-  // Método para pegar o vendedor mais recente de uma sessão
-  async getMostRecentSeller(sessionId) {
-    try {
-      const seller = await prisma.seller.findFirst({
-        where: {
-          sessionId: sessionId,
-        },
-        orderBy: {
-          createdAt: 'desc',  
-        },
-      });
-      return seller;
-    } catch (error) {
-      console.error('Erro ao buscar o vendedor mais recente:', error);
-      throw new Error('Não foi possível buscar o vendedor mais recente.');
-    }
-  }
+  } 
+  
   // Desconectar o Prisma Client
   async disconnect() {
     await this.prisma.$disconnect();

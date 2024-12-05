@@ -4,6 +4,8 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import Seller from '../seller/Seller.mjs';
+import { removeTags } from '../core/removeTags.mjs';
+import { constants } from 'buffer';
 
 dotenv.config();
 
@@ -30,14 +32,15 @@ const upload = multer({ storage });
 export const createSeller = async (req, res, next) => {
   const { sessionId, sellerName, product, description, benefits } = req.body;
   const image = req.file ? req.file.path : null;
-
+  const clearDescription = removeTags(description);
+  const clearBenefits= removeTags(benefits) 
   try {
     const result = await sellerController.create({
       sessionId,
       sellerName,
       product,
-      description,
-      benefits,
+      clearDescription,
+      clearBenefits,
       image,
     });
 

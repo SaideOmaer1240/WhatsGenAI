@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import { ChatGroq } from "@langchain/groq";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import MessageService from "./messageService.js";
-import VendorService from "./vendorService.js";
+import VendorService from "./vendorService.js"; 
 
 // Carregar variáveis de ambiente do arquivo .env
 dotenv.config();
@@ -56,8 +56,7 @@ async function personAI(vendorId, mensagem, phoneNumber) {
 
     // Decide qual método usar para buscar os dados
     const alldata = !vendorName && !sellerProduct
-      ? await sellerService.getMostRecentSeller(vendorId)
-      : await sellerService.findSellers({
+      ?  await sellerService.findMostRecentSeller(vendorId) : await sellerService.findSellers({
           sessionId: vendorId,
           sellerName: vendorName,
           product: sellerProduct,
@@ -65,7 +64,7 @@ async function personAI(vendorId, mensagem, phoneNumber) {
         });
 
     // Verifica se há resultados
-    const [firstResult] = alldata?.results || [];
+    const [firstResult] = alldata?.results || alldata?.seller;
     if (!firstResult) {
       console.error("Nenhum resultado encontrado em alldata.results.");
       return "Nenhum vendedor ou produto foi encontrado no banco de dados.";
@@ -104,7 +103,7 @@ async function personAI(vendorId, mensagem, phoneNumber) {
     const prompt = ChatPromptTemplate.fromMessages([
       [
         "system",
-        "Você é um vendedor inteligente que assume a personalidade do vendedor responsável pelo produto mencionado pelo cliente. Ao identificar um produto ou vendedor no banco de dados, você adapta seu estilo de comunicação para refletir o comportamento e tom do vendedor associado. Responda de maneira amigável, personalizada e persuasiva, ajudando o cliente a tomar a melhor decisão.",
+        "Você é um vendedor inteligente que assume a personalidade do vendedor responsável pelo produto mencionado pelo cliente. Ao identificar um produto ou vendedor no banco de dados, você adapta seu estilo de comunicação para refletir o comportamento e tom do vendedor associado. Responda de maneira amigável, personalizada e persuasiva, ajudando o cliente a tomar a melhor decisão. Aprimore o marketing: Adicione gatilhos como vantagens adicionais na mensagem.Inclua instruções simples de como finalizar a compra diretamente.",
       ],
       ["human", "Prompt do cliente: {prompt}. Banco de dados disponível: {database}."],
     ]);

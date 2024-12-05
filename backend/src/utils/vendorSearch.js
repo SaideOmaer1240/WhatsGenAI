@@ -1,7 +1,5 @@
 import logger from "../log/logger.js";
 
-
-
 class SellerService {
   constructor(prismaClient) {
     this.prisma = prismaClient;
@@ -53,9 +51,14 @@ class SellerService {
         });
       }
 
-      // Decide qual tipo de retorno será enviado
+      // Decisão sobre o tipo de retorno
       if (returnType === "sellers") {
-        const sellers = results.map(({ sellerName, product }) => ({ sellerName, product }));
+        // Mapeia os resultados para a estrutura desejada
+        const sellers = results.map(({ sellerName, product }) => ({
+          sellerName,
+          product,
+        }));
+
         return { sellers };
       }
 
@@ -63,6 +66,38 @@ class SellerService {
       return { results };
     } catch (error) {
       logger.error("Erro ao buscar vendedores no banco de dados:", error);
+      throw new Error("Erro interno ao acessar o banco de dados.");
+    }
+  }
+
+  /**
+   * Busca o vendedor mais recente para uma sessionId.
+   * @param {Object} options - Parâmetros de busca.
+   * @param {string} options.sessionId - Identificador da sessão.
+   * @param {string} [options.returnType="sellers"] - Tipo de retorno desejado ("sellers" ou "results").
+   * @returns {Object} Vendedor mais recente.
+   */
+  async findMostRecentSeller({ sessionId, returnType = "seller" }) {
+    try {
+      const recentSeller = await this.prisma.seller.findFirst({
+        where: { sessionId },
+        orderBy: { createdAt: 'desc' },  // Ordena pela data de criação em ordem decrescente
+      });
+
+      if (!recentSeller) {
+        return { seller: null };
+      }
+
+      // Decide o tipo de retorno baseado no parâmetro returnType
+      if (returnType === "seller") {
+        const { sellerName, product } = recentSeller;
+        return { seller: [{ sellerName, product }] };
+      }
+
+      // Retorna o resultado completo se o tipo for "results"
+      return { seller: recentSeller };
+    } catch (error) {
+      logger.error("Erro ao buscar vendedor mais recente no banco de dados:", error);
       throw new Error("Erro interno ao acessar o banco de dados.");
     }
   }

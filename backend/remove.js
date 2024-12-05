@@ -1,4 +1,4 @@
-function removeTags(htmlString) { 
+export function removeTags(htmlString) { 
     return htmlString.replace(/<\/?[^>]+(>|$)/g, "");
 }
 

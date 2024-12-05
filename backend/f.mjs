@@ -1,7 +1,7 @@
 import personAI from "./src/core/person.mjs";
 
 const sessionid = "hugo";
-const userPrompt = "hugo, ainda tem o produto";
+const userPrompt = "como posso comprar";
 
 const number = '564687543';
 
