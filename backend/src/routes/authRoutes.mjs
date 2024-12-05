@@ -1,19 +1,21 @@
- 
-const express = require('express');
-const router = express.Router(); // Adicionando a definição de router
-const authenticateToken = require('../auth/middleware');
-const generateToken = require('../auth/genToken');
-const bcrypt = require('bcrypt');
-const { PrismaClient } = require('@prisma/client'); 
+import express from 'express'; // Importando Express
+import bcrypt from 'bcrypt'; // Para hashing de senhas
+import { PrismaClient } from '@prisma/client'; // Para interagir com o banco de dados
+
+import { authenticateToken } from '../auth/middleware.mjs'; // Importando middleware
+import { generateToken } from '../auth/genToken.mjs'; // Gerar token JWT
+
+// Configurando router e Prisma Client
+const router = express.Router();
 const prisma = new PrismaClient();
 
 // Verificar autenticação
-router.get('/check-auth', authenticateToken, (req, res) => {
+export const checkAuth = router.get('/check-auth', authenticateToken, (req, res) => {
     res.status(200).json({ authenticated: true, userId: req.userId });
 });
 
 // Cadastro de usuário
-router.post('/register', async (req, res) => {
+export const registerUser = router.post('/register', async (req, res) => {
     const { username, email, password, phoneNumber } = req.body;
 
     try {
@@ -28,7 +30,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Login de usuário
-router.post('/login', async (req, res) => {
+export const loginUser = router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -44,5 +46,3 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ error: 'Erro ao realizar login.', details: error.message });
     }
 });
-
-module.exports = router;  

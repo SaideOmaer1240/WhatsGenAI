@@ -1,7 +1,8 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
-class Seller {
+export default class Seller {
     constructor() {
         this.prisma = prisma;
     }
@@ -75,4 +76,3 @@ class Seller {
     }
 }
 
-module.exports = Seller;

@@ -1,12 +1,13 @@
-const fs = require('fs');
-require('dotenv').config();
-const path = require("path");
-const { ChatGoogleGenerativeAI } = require('@langchain/google-genai');
-const { Groq } = require('groq-sdk');
-const { PrismaClient } = require('@prisma/client');
-const temp = require('temp');
-const sleep = require('./utils/time')
-temp.track();  
+import fs from 'fs';
+import dotenv from 'dotenv';
+import path from 'path';
+import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
+import { Groq } from 'groq-sdk';
+import { PrismaClient } from '@prisma/client';
+import temp from 'temp'; 
+
+dotenv.config(); // Carrega as variáveis de ambiente do arquivo .env
+temp.track();
 
 const prisma = new PrismaClient();
 const visionModel = new ChatGoogleGenerativeAI({
@@ -87,7 +88,7 @@ class Cerebro {
             this.atualizarHistorico(userId, { role: "assistant", content: respostaIA });
             await this.createMessage(sessionId, "client", mensagemUsuario);
             await this.createMessage(sessionId, "bot", respostaIA);
-            await sleep(5);
+         
             return respostaIA;
         } catch (error) {
             console.error("Erro ao gerar resposta da IA:", error.message);
@@ -96,27 +97,27 @@ class Cerebro {
     }
 
     async transcreverAudio(userId, mediaData, sessionId) {
-    let tempFilePath; 
-    try {
-        tempFilePath = temp.path({ suffix: ".mp3" });
-        fs.writeFileSync(tempFilePath, mediaData.data.split(",")[1], { encoding: "base64" });
+        let tempFilePath;
+        try {
+            tempFilePath = temp.path({ suffix: ".mp3" });
+            fs.writeFileSync(tempFilePath, mediaData.data.split(",")[1], { encoding: "base64" });
 
-        const transcription = await groq.audio.transcriptions.create({
-            file: fs.createReadStream(tempFilePath),
-            model: "whisper-large-v3-turbo",
-        });
+            const transcription = await groq.audio.transcriptions.create({
+                file: fs.createReadStream(tempFilePath),
+                model: "whisper-large-v3-turbo",
+            });
 
-        const transcricao = transcription.text || "Não consegui transcrever o áudio.";
-        return await this.gerarRespostaIA(userId, transcricao, sessionId);
-    } catch (error) {
-        console.error("Erro ao transcrever o áudio:", error.message);
-        return "Desculpe, houve um erro ao processar o áudio.";
-    } finally {
-        if (tempFilePath && fs.existsSync(tempFilePath)) {
-            fs.unlinkSync(tempFilePath);  
+            const transcricao = transcription.text || "Não consegui transcrever o áudio.";
+            return await this.gerarRespostaIA(userId, transcricao, sessionId);
+        } catch (error) {
+            console.error("Erro ao transcrever o áudio:", error.message);
+            return "Desculpe, houve um erro ao processar o áudio.";
+        } finally {
+            if (tempFilePath && fs.existsSync(tempFilePath)) {
+                fs.unlinkSync(tempFilePath);
+            }
         }
     }
-}
 
     async gerarRespostaImagem(userId, mediaData) {
         try {
@@ -144,7 +145,4 @@ class Cerebro {
     }
 }
 
-module.exports = Cerebro;
-
- 
- 
+export default Cerebro;

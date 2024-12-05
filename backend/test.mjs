@@ -21,7 +21,7 @@ const llm = new ChatGroq({
 });
 
 // Banco de dados de vendedores
-const sessionId = "ana";
+const sessionId = "saide2";
 
 const database = await sellerService.findSellers({ sessionId, sellerName: null, product: null, returnType: "results" }); 
 console.log(database);

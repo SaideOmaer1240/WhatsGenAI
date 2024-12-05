@@ -14,4 +14,4 @@ class ClimberSeller{
     }
 }
 
-module.exports = ClimberSeller;
+export default ClimberSeller;

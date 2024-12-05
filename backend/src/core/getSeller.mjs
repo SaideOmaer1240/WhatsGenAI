@@ -33,6 +33,7 @@ async function sellerJSON(userPrompt, database) {
 
     // Analise o conteúdo como JSON
     const data = JSON.parse(mensagemVinculadaIA.content);
+    console.log(data)
 
     return data;
   } catch (error) {
