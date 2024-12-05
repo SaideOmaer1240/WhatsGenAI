@@ -30,7 +30,7 @@ async function personAI(vendorId, mensagem, phoneNumber) {
 
     const data = await sellerJSON(mensagem, database);
 
-    const vendorName = data?.matched?.sellerName || null;
+    let vendorName = data?.matched?.sellerName || null;
     const sellerProduct = data?.matched?.product || null;
     console.log("Dados processados do cliente:", data);
 
@@ -53,6 +53,9 @@ async function personAI(vendorId, mensagem, phoneNumber) {
 
     const vendorData = await vendorService.findVendorsBySession(vendorId, phoneNumber);
     console.log("Dados do Vendedor:", vendorData);
+    
+    vendorName = vendorData && vendorData.length > 0 && !vendorName?vendorData.forEach(vendor => {vendor.vendorName }) : null;
+    
 
     // Decide qual método usar para buscar os dados
     const alldata = !vendorName && !sellerProduct
